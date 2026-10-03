@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>PC Build Configurator</title>
+    <style>
+        /* --- GLOBAL & DARK THEME --- */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #0b0c10; 
+            color: #c5c6c7; 
+            margin: 0; 
+            padding: 0; 
+        }
+        
+        /* --- LANDING PAGE --- */
+        #landingPage { 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            background: radial-gradient(circle at center, #1f2833 0%, #0b0c10 100%);
+            text-align: center; 
+        }
+        #landingPage h1 { 
+            font-size: 70px; 
+            margin: 0; 
+            letter-spacing: 5px; 
+            text-transform: uppercase; 
+            color: #fff;
+            text-shadow: 0 0 10px #00f3ff, 0 0 20px #00f3ff, 0 0 40px #00f3ff;
+        }
+        #landingPage p { 
+            font-size: 22px; 
+            margin-top: 10px;
+            margin-bottom: 40px; 
+            color: #66fcf1; 
+            letter-spacing: 2px;
+        }
+        .btn-findout { 
+            padding: 15px 50px; 
+            font-size: 18px; 
+            font-weight: bold; 
+            color: #0b0c10; 
+            background: linear-gradient(90deg, #00f3ff 0%, #0abde3 100%); 
+            border: none; 
+            border-radius: 30px; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.5); 
+            text-transform: uppercase;
+        }
+        .btn-findout:hover { 
+            transform: scale(1.05); 
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.8);
+            color: #fff;
+        }
+
+        /* --- MAIN PAGE --- */
+        #mainPage { display: none; padding: 30px 20px; }
+        .container { max-width: 1250px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h2 { font-size: 35px; color: #fff; text-shadow: 0 0 10px #00f3ff; margin-bottom: 5px; }
+        
+        fieldset { 
+            border: 1px solid #1f2833; 
+            border-radius: 10px; 
+            margin-bottom: 50px; 
+            background: #12141a; 
+            padding: 25px; 
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            transition: border-color 0.3s;
+        }
+        fieldset:hover { border-color: #00f3ff; }
+        
+        legend { 
+            font-weight: bold; background: linear-gradient(90deg, #00f3ff, #0abde3); color: #000; 
+            padding: 8px 30px; border-radius: 20px; margin: 0 auto; text-align: center; 
+            font-size: 14px; text-transform: uppercase; letter-spacing: 2px;
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+        }
+        .legend-premium { background: linear-gradient(90deg, #9b59b6, #8e44ad); color: white; box-shadow: 0 0 10px rgba(155, 89, 182, 0.5); } 
+        .legend-collab { background: linear-gradient(90deg, #ff007f, #e74c3c); color: white; box-shadow: 0 0 10px rgba(255, 0, 127, 0.5); } 
+
+        /* --- CARDS --- */
+        .row { display: flex; flex-wrap: wrap; gap: 25px; padding: 10px; justify-content: center; }
+        .prebuild_card { 
+            border: 1px solid #1f2833; border-radius: 12px; padding: 20px; width: 260px; 
+            background: #1a1e24; box-shadow: 0 5px 15px rgba(0,0,0,0.5); 
+            transition: all 0.3s ease; position: relative; 
+        }
+        .prebuild_card:hover { transform: translateY(-8px); border-color: #00f3ff; box-shadow: 0 10px 25px rgba(0, 243, 255, 0.2); }
+        
+        .badge { position: absolute; top: -12px; right: -10px; background: linear-gradient(90deg, #ff007f, #e74c3c); color: white; padding: 6px 15px; border-radius: 20px; font-size: 11px; font-weight: bold; box-shadow: 0 0 10px rgba(255, 0, 127, 0.5); }
+        .badge-brand { background: linear-gradient(90deg, #9b59b6, #8e44ad); box-shadow: 0 0 10px rgba(155, 89, 182, 0.5);}
+
+        .prebuild_card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 12px; border: 1px solid #333; transition: 0.3s; }
+        .prebuild_card:hover img { border-color: #00f3ff; }
+
+        .prebuild_card h3 { margin-top: 5px; color: #fff; border-bottom: 1px solid #333; padding-bottom: 15px; font-size: 18px; text-align: center; letter-spacing: 1px;}
+        .prebuild_card p { margin: 8px 0; font-size: 14px; color: #a9a9a9; }
+        .prebuild_card b { color: #66fcf1; } 
+        .price-text { color: #00f3ff; font-size: 22px; font-weight: bold; display: block; margin-top: 15px; text-align: center; text-shadow: 0 0 5px rgba(0,243,255,0.3);}
+        
+        .button-group { display: flex; gap: 10px; margin-top: 20px; }
+        .button-group button { flex: 1; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;}
+        .btn-customize { background: transparent; border: 1px solid #00f3ff; color: #00f3ff; } 
+        .btn-customize:hover { background: #00f3ff; color: #000; box-shadow: 0 0 15px rgba(0, 243, 255, 0.5); }
+        .btn-proceed { background: transparent; border: 1px solid #ff007f; color: #ff007f; } 
+        .btn-proceed:hover { background: #ff007f; color: #fff; box-shadow: 0 0 15px rgba(255, 0, 127, 0.5); }
+        
+        /* --- MODALS --- */
+        .modal-background { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 100; backdrop-filter: blur(5px); }
+        .modal-box { background: #12141a; margin: 10vh auto; width: 400px; padding: 30px; border-radius: 12px; border: 1px solid #00f3ff; box-shadow: 0 0 30px rgba(0, 243, 255, 0.2); color: #fff;}
+        .modal-box h3 { margin-top: 0; color: #00f3ff; text-align: center; text-transform: uppercase; letter-spacing: 2px;}
+        .modal-box label { display: inline-block; width: 60px; font-weight: bold; margin-top: 15px; color: #66fcf1; }
+        
+        .modal-box select { width: calc(100% - 70px); padding: 10px; margin-top: 15px; border-radius: 6px; background: #0b0c10; color: #fff; border: 1px solid #333; font-size: 14px; outline: none; transition: 0.3s;}
+        .modal-box select:focus { border-color: #00f3ff; box-shadow: 0 0 8px rgba(0,243,255,0.5); }
+        
+        .modal-actions { margin-top: 30px; text-align: center; border-top: 1px solid #333; padding-top: 20px;}
+        .modal-actions button { padding: 12px 20px; margin: 0 5px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; text-transform: uppercase; transition: 0.3s;}
+        .btn-save { background: #00f3ff; color: #000; } .btn-save:hover { box-shadow: 0 0 15px rgba(0,243,255,0.6); }
+        .btn-close { background: transparent; border: 1px solid #ff007f; color: #ff007f; } .btn-close:hover { background: #ff007f; color: #fff; box-shadow: 0 0 15px rgba(255,0,127,0.6);}
+
+        .summary-details p { margin: 10px 0; font-size: 15px; border-bottom: 1px dashed #333; padding-bottom: 8px; color: #c5c6c7;}
+        .summary-total { font-size: 22px; color: #00f3ff; padding-top: 15px; margin-top: 10px; text-align: right; text-shadow: 0 0 5px rgba(0,243,255,0.3); font-weight: bold;}
+    </style>
+</head>
+<body>
+
+    <div id="landingPage">
+        <h1>PC IMAGE</h1>
+        <p>Premium Custom PC Builder & Collab Exclusives</p>
+        <button class="btn-findout" onclick="goToMainPage()">Enter The System</button>
+    </div>
+
+    <div id="mainPage">
+        <div class="container">
+            <div class="header">
+                <h2><b>PC IMAGE DIY BUILD</b></h2>
+                <p style="color: #66fcf1;">Choose your tier. Customize logically. Build perfectly.</p>
+            </div>
+
+            <fieldset><legend>STUDENT SETUP</legend><div class="row" id="student_row"></div></fieldset>
+            <fieldset><legend>GAMING SETUP (INTEL & AMD)</legend><div class="row" id="gaming_row"></div></fieldset>
+            <fieldset><legend>WORKER / CREATOR SETUP</legend><div class="row" id="worker_row"></div></fieldset>
+            <fieldset><legend class="legend-premium">HIGH-END BRANDED BUILDS (MSI & GIGABYTE)</legend><div class="row" id="brand_row"></div></fieldset>
+            <fieldset><legend class="legend-collab">SPECIAL COLLABORATION (LIMITED EDITION)</legend><div class="row" id="collab_row"></div></fieldset>
+        </div>
+    </div>
+
+    <div id="modalCustomize" class="modal-background">
+        <div class="modal-box">
+            <h3 id="modalTitle">Change Specification</h3>
+            <p id="modalTierInfo" style="font-size: 12px; color: #a9a9a9; margin-bottom: 20px; text-align: center;"></p>
+            <div>
+                <label>RAM:</label><select id="chooseRAM"></select><br>
+                <label>SSD:</label><select id="chooseSSD"></select>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-save" onclick="saveSpec()">Save Upgrade</button>
+                <button class="btn-close" onclick="closeCustomize()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalOrder" class="modal-background">
+        <div class="modal-box">
+            <h3>Order Summary</h3>
+            <div id="orderSummaryContent" class="summary-details"></div>
+            <div class="modal-actions">
+                <button class="btn-save" onclick="placeOrder()">Confirm Order</button>
+                <button class="btn-close" onclick="closeOrder()">Back</button>
+            </div>
+        </div>
+    </div>
+  
+    <script>
+        function goToMainPage() {
+            document.getElementById("landingPage").style.display = "none";
+            document.getElementById("mainPage").style.display = "block";
+            window.scrollTo(0, 0); 
+        }
+
+        const marketPrices = {
+            "budget": { desc: "Memori DDR4 & SSD Gen3 NVMe", ram: { 8: 90, 16: 170, 32: 320 }, ssd: { 256: 110, 512: 190, 1000: 340, 2000: 650 } },
+            "mid": { desc: "Memori DDR5 Basic & SSD Gen4", ram: { 16: 250, 32: 480, 64: 900 }, ssd: { 512: 240, 1000: 450, 2000: 950 } },
+            "premium": { desc: "Memori DDR5 RGB & SSD Gen4 High-End", ram: { 32: 600, 64: 1170, 128: 2300 }, ssd: { 1000: 650, 2000: 1300, 4000: 2800 } },
+            "enthusiast": { desc: "Memori DDR5 6000MHz+ & SSD Gen5 Ultimate", ram: { 32: 850, 64: 1600, 128: 3100 }, ssd: { 1000: 900, 2000: 1800, 4000: 3900, 8000: 8000 } }
+        };
+
+        // --- DATABASE: 'worker_adv' telah diperbarui menjadi Fractal.png ---
+        let pcDatabase = {
+            "student_basic": { image: "image_diy/Tecware Flatline (Black).png", tier: "student_row", tierClass: "budget", tag: "", title: "Student (Basic)", cpu: "AMD Ryzen 3 4300G", gpu: "Radeon Vega 6", baseRam: 8, baseSsd: 256, ram: 8, ssd: 256, basePrice: 1299, extraRamPrice: 0, extraSsdPrice: 0 },
+            "student_adv":   { image: "image_diy/Montech AIR 100 ARGB (Black).png", tier: "student_row", tierClass: "budget", tag: "", title: "Student (Advanced)", cpu: "Intel Core i5-12400", gpu: "Intel UHD 730", baseRam: 16, baseSsd: 512, ram: 16, ssd: 512, basePrice: 1899, extraRamPrice: 0, extraSsdPrice: 0 },
+            
+            "gaming_amd_basic": { image: "image_diy/MSI MAG Forge 100R.png", tier: "gaming_row", tierClass: "mid", tag: "", title: "AMD Build (Basic)", cpu: "AMD Ryzen 5 7600", gpu: "Radeon RX 7600", baseRam: 16, baseSsd: 512, ram: 16, ssd: 512, basePrice: 3499, extraRamPrice: 0, extraSsdPrice: 0 },
+            "gaming_amd_adv":   { image: "image_diy/Lian Li Lancool 216.png", tier: "gaming_row", tierClass: "premium", tag: "", title: "AMD Build (Advanced)", cpu: "AMD Ryzen 7 7800X3D", gpu: "Radeon RX 7900 GRE", baseRam: 32, baseSsd: 1000, ram: 32, ssd: 1000, basePrice: 7199, extraRamPrice: 0, extraSsdPrice: 0 },
+            "gaming_intel_basic": { image: "image_diy/NZXT H5 Flow (Black).png", tier: "gaming_row", tierClass: "mid", tag: "", title: "Intel Build (Basic)", cpu: "Intel Core i5-13400F", gpu: "NVIDIA RTX 4060", baseRam: 16, baseSsd: 512, ram: 16, ssd: 512, basePrice: 3599, extraRamPrice: 0, extraSsdPrice: 0 },
+            "gaming_intel_adv":   { image: "image_diy/Hyte Y60.png", tier: "gaming_row", tierClass: "premium", tag: "", title: "Intel Build (Advanced)", cpu: "Intel Core i7-14700F", gpu: "RTX 4070 Ti SUPER", baseRam: 32, baseSsd: 1000, ram: 32, ssd: 1000, basePrice: 7899, extraRamPrice: 0, extraSsdPrice: 0 },
+            
+            "worker_basic":  { image: "image_diy/Cooler Master Silencio S400.png", tier: "worker_row", tierClass: "budget", tag: "", title: "Office Desktop", cpu: "Intel Core i3-13100", gpu: "UHD 730", baseRam: 16, baseSsd: 512, ram: 16, ssd: 512, basePrice: 1799, extraRamPrice: 0, extraSsdPrice: 0 },
+            
+            // ---> Ini bagian yang baru saja kita ubah:
+            "worker_adv":    { image: "image_diy/Fractal.png", tier: "worker_row", tierClass: "premium", tag: "", title: "Pro Creator Studio", cpu: "Intel Core i9-14900K", gpu: "RTX 4080 SUPER", baseRam: 64, baseSsd: 2000, ram: 64, ssd: 2000, basePrice: 12499, extraRamPrice: 0, extraSsdPrice: 0 },
+            
+            "brand_msi_1": { image: "image_diy/MSI MEG Prospect 700R.png", tier: "brand_row", tierClass: "premium", tag: "MSI", title: "MSI Suprim Liquid", cpu: "Intel Core i7-14700K", gpu: "RTX 4080 SUPER Suprim", baseRam: 32, baseSsd: 2000, ram: 32, ssd: 2000, basePrice: 13999, extraRamPrice: 0, extraSsdPrice: 0 },
+            "brand_msi_2": { image: "image_diy/MSI MPG Gungnir 300R Airflow.png", tier: "brand_row", tierClass: "enthusiast", tag: "MSI", title: "MSI Gaming Trio Ultra", cpu: "AMD Ryzen 9 7950X3D", gpu: "RTX 4090 Gaming Trio", baseRam: 64, baseSsd: 2000, ram: 64, ssd: 2000, basePrice: 18599, extraRamPrice: 0, extraSsdPrice: 0 },
+            "brand_giga_1": { image: "image_diy/Gigabyte AORUS C500 Glass.png", tier: "brand_row", tierClass: "enthusiast", tag: "AORUS", title: "AORUS Master Flagship", cpu: "Intel Core i9-14900K", gpu: "AORUS RTX 4090 Master", baseRam: 64, baseSsd: 2000, ram: 64, ssd: 2000, basePrice: 19999, extraRamPrice: 0, extraSsdPrice: 0 },
+            "brand_giga_2": { image: "image_diy/NZXT H9 Flow (White).png", tier: "brand_row", tierClass: "premium", tag: "GIGABYTE", title: "Gigabyte AERO (White)", cpu: "AMD Ryzen 7 7800X3D", gpu: "RTX 4070 Ti S AERO", baseRam: 32, baseSsd: 1000, ram: 32, ssd: 1000, basePrice: 10299, extraRamPrice: 0, extraSsdPrice: 0 },
+            
+            "collab_miku": { image: "image_diy/Thermaltake The Tower 300 (Turquoise).png", tier: "collab_row", tierClass: "enthusiast", tag: "MIKU", title: "ROG Hatsune Miku", cpu: "AMD Ryzen 7 9800X3D", gpu: "ROG RTX 5080 Miku", baseRam: 32, baseSsd: 2000, ram: 32, ssd: 2000, basePrice: 16999, extraRamPrice: 0, extraSsdPrice: 0 },
+            "collab_eva": { image: "image_diy/ASUS ROG Hyperion GR701 EVA-02 Edition.png", tier: "collab_row", tierClass: "enthusiast", tag: "ROG EVA-02", title: "ROG x Evangelion", cpu: "Intel Core i9-14900K", gpu: "ROG Strix RTX 4090 EVA", baseRam: 64, baseSsd: 2000, ram: 64, ssd: 2000, basePrice: 23665, extraRamPrice: 0, extraSsdPrice: 0 },
+            "collab_cyber": { image: "image_diy/NZXT H710i Cyberpunk 2077 Edition.png", tier: "collab_row", tierClass: "enthusiast", tag: "CYBERPUNK", title: "Cyberpunk 2077 Ed.", cpu: "AMD Ryzen 9 9950X", gpu: "RTX 5090 Cyberpunk", baseRam: 64, baseSsd: 4000, ram: 64, ssd: 4000, basePrice: 24999, extraRamPrice: 0, extraSsdPrice: 0 }
+        };
+
+        let activeCardId = "";
+        const formatSSD = (val) => val >= 1000 ? (val/1000) + "TB" : val + "GB";
+
+        function renderCards() {
+            const tiers = ["student_row", "gaming_row", "worker_row", "brand_row", "collab_row"];
+            tiers.forEach(tier => document.getElementById(tier).innerHTML = "");
+
+            for (let id in pcDatabase) {
+                let pc = pcDatabase[id];
+                let totalPrice = pc.basePrice + pc.extraRamPrice + pc.extraSsdPrice;
+                
+                let badgeHTML = "";
+                if (pc.tag) {
+                    let badgeClass = (pc.tier === "collab_row") ? "badge" : "badge badge-brand";
+                    badgeHTML = `<div class="${badgeClass}">${pc.tag}</div>`;
+                }
+
+                let cardHTML = `
+                    <div class="prebuild_card" id="${id}">
+                        ${badgeHTML}
+                        <img src="${pc.image}" alt="${pc.title}">
+                        <h3>${pc.title}</h3>
+                        <p><b>GPU:</b> ${pc.gpu}</p>
+                        <p><b>CPU:</b> ${pc.cpu}</p>
+                        <p><b>RAM:</b> ${pc.ram}GB</p>
+                        <p><b>SSD:</b> ${formatSSD(pc.ssd)}</p>
+                        <span class="price-text">RM ${totalPrice.toLocaleString()}</span>
+                        
+                        <div class="button-group">
+                            <button class="btn-customize" onclick="openCustomize('${id}')">Customize</button>
+                            <button class="btn-proceed" onclick="openOrder('${id}')">Proceed</button>
+                        </div>
+                    </div>
+                `;
+                document.getElementById(pc.tier).innerHTML += cardHTML;
+            }
+        }
+
+        function openCustomize(cardId) {
+            activeCardId = cardId;
+            let pc = pcDatabase[cardId];
+            let pricingTier = marketPrices[pc.tierClass];
+
+            document.getElementById("modalTitle").innerText = "Upgrade: " + pc.title;
+            document.getElementById("modalTierInfo").innerText = "Tech: " + pricingTier.desc;
+
+            let ramSelect = document.getElementById("chooseRAM");
+            let ramHTML = "";
+            let baseRamCost = pricingTier.ram[pc.baseRam];
+
+            for (let size in pricingTier.ram) {
+                if (parseInt(size) >= pc.baseRam) {
+                    let extraCost = pricingTier.ram[size] - baseRamCost; 
+                    let display = extraCost === 0 ? "(Base Included)" : `(+RM ${extraCost})`;
+                    ramHTML += `<option value="${size}" data-price="${extraCost}">${size}GB ${display}</option>`;
+                }
+            }
+            ramSelect.innerHTML = ramHTML;
+            ramSelect.value = pc.ram;
+
+            let ssdSelect = document.getElementById("chooseSSD");
+            let ssdHTML = "";
+            let baseSsdCost = pricingTier.ssd[pc.baseSsd];
+
+            for (let size in pricingTier.ssd) {
+                if (parseInt(size) >= pc.baseSsd) {
+                    let extraCost = pricingTier.ssd[size] - baseSsdCost;
+                    let display = extraCost === 0 ? "(Base Included)" : `(+RM ${extraCost})`;
+                    ssdHTML += `<option value="${size}" data-price="${extraCost}">${formatSSD(parseInt(size))} ${display}</option>`;
+                }
+            }
+            ssdSelect.innerHTML = ssdHTML;
+            ssdSelect.value = pc.ssd;
+
+            document.getElementById("modalCustomize").style.display = "block";
+        }
+
+        function closeCustomize() { document.getElementById("modalCustomize").style.display = "none"; }
+        
+        function saveSpec() {
+            let pc = pcDatabase[activeCardId];
+            let ramSelect = document.getElementById("chooseRAM");
+            let ssdSelect = document.getElementById("chooseSSD");
+            
+            pc.ram = parseInt(ramSelect.value);
+            pc.extraRamPrice = Number(ramSelect.options[ramSelect.selectedIndex].dataset.price);
+            
+            pc.ssd = parseInt(ssdSelect.value);
+            pc.extraSsdPrice = Number(ssdSelect.options[ssdSelect.selectedIndex].dataset.price);
+            
+            renderCards();
+            closeCustomize();
+        }
+
+        function openOrder(cardId) {
+            let pc = pcDatabase[cardId];
+            let totalPrice = pc.basePrice + pc.extraRamPrice + pc.extraSsdPrice;
+            let summaryHTML = `
+                <p><b>Model:</b> ${pc.title}</p>
+                <p><b>Processor:</b> <span style="color:#00f3ff;">${pc.cpu}</span></p>
+                <p><b>Graphics:</b> <span style="color:#00f3ff;">${pc.gpu}</span></p>
+                <p><b>Memory:</b> <span style="color:#00f3ff;">${pc.ram}GB RAM</span></p>
+                <p><b>Storage:</b> <span style="color:#00f3ff;">${formatSSD(pc.ssd)} SSD</span></p>
+                <div class="summary-total">Total: RM ${totalPrice.toLocaleString()}</div>
+            `;
+            document.getElementById("orderSummaryContent").innerHTML = summaryHTML;
+            document.getElementById("modalOrder").style.display = "block";
+        }
+
+        function closeOrder() { document.getElementById("modalOrder").style.display = "none"; }
+        function placeOrder() {
+            alert("Sistem tempahan berjaya! Bersedia untuk membina PC idaman Anda.");
+            closeOrder();
+        }
+
+        window.onload = renderCards;
+    </script>
+</body>
+</html>
